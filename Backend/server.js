@@ -1,5 +1,8 @@
+import connectToDB from "./config/mongodb.config.js";
 import server from "./index.js";
 
-server.listen(3700, () => {
-    console.log("server is listening at port 300");
+const PORT = process.env.PORT;
+server.listen(PORT, () => {
+    console.log("server is listening at port ");
+    connectToDB();
 });
