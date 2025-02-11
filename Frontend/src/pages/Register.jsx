@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import "./LoginPage.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,12 +6,12 @@ import axios from "axios";
 
 const registerUser = async (data) => {
     try {
-        const response = await axios.post("/api/register", data, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        return response.data;
+        const myfun = async () => {
+            setTimeout(() => {
+                console.log(data);
+            }, 100);
+        };
+        await myfun();
     } catch (error) {
         if (error.response) {
             throw new Error(error.response.data.message || "Registration failed");
@@ -21,19 +21,25 @@ const registerUser = async (data) => {
 };
 
 const Register = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    console.log("render");
+
+    const emailRef = useRef("");
+    const passwordRef = useRef("");
+
+    // const [email, setEmail] = useState("");
+    // const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = useCallback(
-        async (e) => {
-            e.preventDefault();
-            mutation.mutate({ email, password });
-        },
-        [email, password]
-    );
+    const handleSubmit = useCallback(async (e) => {
+        e.preventDefault();
+        if (!emailRef.current & !passwordRef.current) {
+            registerUser({ email: emailRef.current, password: passwordRef.current });
+            emailRef.current = null;
+            passwordRef.current = null;
+        }
+    });
 
-    const { mutate, isLoading, error } = useMutation({
+    const { isLoading, error } = useMutation({
         mutationFn: registerUser,
         onSuccess: () => {
             navigate("/login");
@@ -59,8 +65,7 @@ const Register = () => {
                     id="email"
                     placeholder="Enter email"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => (emailRef.current = e.target.value)}
                 />
 
                 <label htmlFor="password">Password</label>
@@ -71,8 +76,7 @@ const Register = () => {
                     id="password"
                     placeholder="Enter Password"
                     required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => (passwordRef.current = e.target.value)}
                 />
 
                 <button
