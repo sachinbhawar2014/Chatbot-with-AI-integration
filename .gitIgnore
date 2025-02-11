@@ -1,0 +1,6 @@
+# Ignore .env files in both frontend and backend
+frontend/.env
+backend/.env
+
+# Or to ignore any .env file throughout the whole project, use:
+*.env
