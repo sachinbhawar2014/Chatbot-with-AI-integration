@@ -13,8 +13,8 @@ const registerUser = async (data) => {
         };
         await myfun();
     } catch (error) {
-        if (error.response) {
-            throw new Error(error.response.data.message || "Registration failed");
+        if (error) {
+            throw new Error("Registration failed");
         }
         throw error;
     }
